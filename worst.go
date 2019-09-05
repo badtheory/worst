@@ -109,6 +109,8 @@ func New(opt ...Options) *Worst {
 	w.Router.Use(middleware.Timeout(60 * time.Second))
 	w.Router.Handle(s.Static.Url, http.Handler(http.FileServer(unindexed.Dir(s.Static.Path))))
 
+	w.Options.Server.Handler = w.Router
+
 	return w
 
 }
