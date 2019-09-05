@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"reflect"
 	"time"
+	"github.com/creasty/defaults"
 )
 
 type Worst struct {
@@ -32,15 +33,22 @@ type Options struct {
 }
 
 type Static struct {
-	Url 		string
-	Path 		string
+	Url 		string `default:"/*"`
+	Path 		string `default:""`
 }
 
 func New(opt ...Options) *Worst {
 
-	var s Options
+	var o Options
+	var s Static
+
 	if len(opt) == 0 {
-		s = Options{
+
+		if err := defaults.Set(&s); err != nil {
+			panic(err)
+		}
+
+		o = Options{
 			secure.Options{
 				STSSeconds:            31536000,
 				STSIncludeSubdomains:  true,
@@ -50,10 +58,7 @@ func New(opt ...Options) *Worst {
 				BrowserXssFilter:      true,
 				ContentSecurityPolicy: "script-src $NONCE",
 			},
-			Static{
-				"/public/*",
-				"../public",
-			},
+			s,
 			&http.Server{
 				Addr:         "localhost:1337",
 				ReadTimeout:  60 * time.Second,
@@ -63,6 +68,10 @@ func New(opt ...Options) *Worst {
 			render.New(),
 		}
 	} else {
+
+		if err := defaults.Set(&opt[0]); err != nil {
+			panic(err)
+		}
 
 		if reflect.DeepEqual(Options{}.Security, opt[0].Security)  {
 			opt[0].Security = secure.Options{
@@ -76,39 +85,34 @@ func New(opt ...Options) *Worst {
 			}
 		}
 
-		if (Options{}.Static == opt[0].Static)  {
-			opt[0].Static = Static{
-				"/public/*",
-				"../public",
-			}
-		}
-
 		if (Options{}.Render == opt[0].Render)  {
 			opt[0].Render = render.New()
 		}
 
-		s = opt[0]
+		o = opt[0]
 	}
 
-	secureMiddleware := secure.New(s.Security)
+	secureMiddleware := secure.New(o.Security)
 
 	w := &Worst{
 		Router: &Router{
-			s.Render,
+			o.Render,
 			chi.NewRouter(),
 		},
 		Security: secureMiddleware,
-		Options: s,
+		Options: o,
 	}
 
-	w.Router.Use(secureMiddleware.Handler)
-	w.Router.Use(middleware.RequestID)
-	w.Router.Use(middleware.Logger)
-	w.Router.Use(middleware.Recoverer)
-	w.Router.Use(middleware.Compress(3))
-	w.Router.Use(middleware.Timeout(60 * time.Second))
-	w.Router.Handle(s.Static.Url, http.Handler(http.FileServer(unindexed.Dir(s.Static.Path))))
+	w.Router.Use(
+		secureMiddleware.Handler,
+		middleware.RequestID,
+		middleware.Logger,
+		middleware.Recoverer,
+		middleware.Compress(3),
+		middleware.Timeout(60 * time.Second),
+	)
 
+	w.Router.Handle(o.Static.Url, http.Handler(http.FileServer(unindexed.Dir(o.Static.Path))))
 	return w
 
 }
