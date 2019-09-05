@@ -6,6 +6,7 @@ import (
 	"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
 	"github.com/unrolled/secure"
+	"github.com/unrolled/render"
 	"log"
 	"net/http"
 	"reflect"
@@ -22,6 +23,7 @@ type Options struct {
 	Security		secure.Options
 	Static 			Static
 	Server          *http.Server
+	Render			*render.Render
 }
 
 type Static struct {
@@ -53,6 +55,7 @@ func New(opt ...Options) *Worst {
 				WriteTimeout: 60 * time.Second,
 				IdleTimeout:  60 * time.Second,
 			},
+			render.New(),
 		}
 	} else {
 
@@ -68,20 +71,15 @@ func New(opt ...Options) *Worst {
 			}
 		}
 
-		if (Static{} == opt[0].Static)  {
+		if (Options{}.Static == opt[0].Static)  {
 			opt[0].Static = Static{
 				"/public/*",
 				"../public",
 			}
 		}
 
-		if (Options{}.Server == opt[0].Server)  {
-			opt[0].Server = &http.Server{
-				Addr:         "localhost:1337",
-				ReadTimeout:  60 * time.Second,
-				WriteTimeout: 60 * time.Second,
-				IdleTimeout:  60 * time.Second,
-			}
+		if (Options{}.Render == opt[0].Render)  {
+			opt[0].Render = render.New()
 		}
 
 		s = opt[0]
