@@ -3,7 +3,7 @@ package worst
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/jordan-wright/unindexed"
+	//"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
 	"github.com/unrolled/secure"
 	"github.com/unrolled/render"
