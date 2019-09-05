@@ -14,9 +14,14 @@ import (
 )
 
 type Worst struct {
-	Router 			*chi.Mux
+	Router 			Router
 	Security		*secure.Secure
 	Options			Options
+}
+
+type Router struct {
+	Render		*render.Render
+	*chi.Mux
 }
 
 type Options struct {
@@ -88,7 +93,10 @@ func New(opt ...Options) *Worst {
 	secureMiddleware := secure.New(s.Security)
 
 	w := &Worst{
-		Router:chi.NewRouter(),
+		Router: Router{
+			s.Render,
+			chi.NewRouter(),
+		},
 		Security: secureMiddleware,
 		Options: s,
 	}
