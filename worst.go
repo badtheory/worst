@@ -109,13 +109,12 @@ func New(opt ...Options) *Worst {
 	w.Router.Use(middleware.Timeout(60 * time.Second))
 	w.Router.Handle(s.Static.Url, http.Handler(http.FileServer(unindexed.Dir(s.Static.Path))))
 
-	w.Options.Server.Handler = w.Router
-
 	return w
 
 }
 
 func (w *Worst) Run() {
+	w.Options.Server.Handler = w.Router
 	log.Println(Gray(1-1, Bold("Worst HTTP running on " + w.Options.Server.Addr)).BgGray(24-1))
 	if err := w.Options.Server.ListenAndServe(); err == nil {
 		log.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24-1))
