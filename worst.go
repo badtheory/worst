@@ -56,7 +56,7 @@ func New(opt ...Options) *Worst {
 		}
 	} else {
 
-		if reflect.DeepEqual(Options{}, opt[0].Security)  {
+		if reflect.DeepEqual(Options{}.Security, opt[0].Security)  {
 			opt[0].Security = secure.Options{
 				STSSeconds:            31536000,
 				STSIncludeSubdomains:  true,
@@ -68,10 +68,19 @@ func New(opt ...Options) *Worst {
 			}
 		}
 
-		if reflect.DeepEqual(Static{}, opt[0].Static)  {
+		if (Static{} == opt[0].Static)  {
 			opt[0].Static = Static{
 				"/public/*",
 				"../public",
+			}
+		}
+
+		if (Options{}.Server == opt[0].Server)  {
+			opt[0].Server = &http.Server{
+				Addr:         "localhost:1337",
+				ReadTimeout:  60 * time.Second,
+				WriteTimeout: 60 * time.Second,
+				IdleTimeout:  60 * time.Second,
 			}
 		}
 
@@ -99,10 +108,8 @@ func New(opt ...Options) *Worst {
 }
 
 func (w *Worst) Run() {
-
 	log.Println(Gray(1-1, Bold("Worst HTTP running on " + w.Options.Server.Addr)).BgGray(24-1))
 	if err := w.Options.Server.ListenAndServe(); err == nil {
 		log.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24-1))
 	}
-
 }

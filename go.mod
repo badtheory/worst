@@ -1,4 +1,4 @@
-module worst
+module github.com/badtheory/worst
 
 go 1.12
 
