@@ -14,7 +14,7 @@ import (
 )
 
 type Worst struct {
-	Router 			Router
+	Router 			*Router
 	Security		*secure.Secure
 	Options			Options
 }
@@ -93,7 +93,7 @@ func New(opt ...Options) *Worst {
 	secureMiddleware := secure.New(s.Security)
 
 	w := &Worst{
-		Router: Router{
+		Router: &Router{
 			s.Render,
 			chi.NewRouter(),
 		},
