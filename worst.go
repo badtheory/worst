@@ -21,7 +21,7 @@ type Worst struct {
 
 type Router struct {
 	Render		*render.Render
-	*chi.Mux
+	Mux			*chi.Mux
 }
 
 type Options struct {
@@ -101,13 +101,13 @@ func New(opt ...Options) *Worst {
 		Options: s,
 	}
 
-	w.Router.Use(secureMiddleware.Handler)
-	w.Router.Use(middleware.RequestID)
-	w.Router.Use(middleware.Logger)
-	w.Router.Use(middleware.Recoverer)
-	w.Router.Use(middleware.Compress(3))
-	w.Router.Use(middleware.Timeout(60 * time.Second))
-	w.Router.Handle(s.Static.Url, http.Handler(http.FileServer(unindexed.Dir(s.Static.Path))))
+	w.Router.Mux.Use(secureMiddleware.Handler)
+	w.Router.Mux.Use(middleware.RequestID)
+	w.Router.Mux.Use(middleware.Logger)
+	w.Router.Mux.Use(middleware.Recoverer)
+	w.Router.Mux.Use(middleware.Compress(3))
+	w.Router.Mux.Use(middleware.Timeout(60 * time.Second))
+	//w.Router.Mux.Handle(s.Static.Url, http.Handler(http.FileServer(unindexed.Dir(s.Static.Path))))
 
 	return w
 
