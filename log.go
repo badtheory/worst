@@ -10,7 +10,6 @@ import (
 func Log() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-
 			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 			t1 := time.Now()
 			defer func() {
@@ -26,7 +25,6 @@ func Log() func(next http.Handler) http.Handler {
 				)
 				ctx.Infof("req_level_log")
 			}()
-
 			next.ServeHTTP(ww, r)
 		}
 		return http.HandlerFunc(fn)
