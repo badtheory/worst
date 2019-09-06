@@ -32,7 +32,7 @@ type Options struct {
 	Static 			Static
 	Server          *http.Server
 	Render			*render.Render
-	Informer 	    informer.Configuration
+	Logger 	    informer.Configuration
 }
 
 type Static struct {
@@ -108,7 +108,7 @@ func New(opt ...Options) *Worst {
 		Options: o,
 	}
 
-	err := informer.NewLogger(o.Informer, informer.InstanceZapLogger)
+	err := informer.NewLogger(o.Logger, informer.InstanceZapLogger)
 	if err != nil {
 		log.Fatalf("Could not instantiate log %s", err.Error())
 	}
