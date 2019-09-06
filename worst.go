@@ -1,16 +1,16 @@
 package worst
 
 import (
+	"fmt"
+	"github.com/badtheory/informer"
 	"github.com/creasty/defaults"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
-	log "github.com/sirupsen/logrus"
-	l "github.com/treastech/logger"
 	"github.com/unrolled/render"
 	"github.com/unrolled/secure"
-	"go.uber.org/zap"
+	"log"
 	"net/http"
 	"reflect"
 	"time"
@@ -32,6 +32,7 @@ type Options struct {
 	Static 			Static
 	Server          *http.Server
 	Render			*render.Render
+	Informer 	    informer.Configuration
 }
 
 type Static struct {
@@ -43,6 +44,7 @@ func New(opt ...Options) *Worst {
 
 	var o Options
 	var s Static
+	var i informer.Configuration
 
 	if len(opt) == 0 {
 
@@ -68,6 +70,7 @@ func New(opt ...Options) *Worst {
 				IdleTimeout:  60 * time.Second,
 			},
 			render.New(),
+			i,
 		}
 	} else {
 
@@ -105,14 +108,15 @@ func New(opt ...Options) *Worst {
 		Options: o,
 	}
 
-
-	logger, _ := zap.NewProduction()
-	defer logger.Sync()
+	err := informer.NewLogger(o.Informer, informer.InstanceZapLogger)
+	if err != nil {
+		log.Fatalf("Could not instantiate log %s", err.Error())
+	}
 
 	w.Router.Use(
 		secureMiddleware.Handler,
 		middleware.RequestID,
-		l.Logger(logger),
+		Log(),
 		middleware.Recoverer,
 		middleware.Compress(3),
 		middleware.Timeout(60 * time.Second),
@@ -125,8 +129,10 @@ func New(opt ...Options) *Worst {
 
 func (w *Worst) Run() {
 	w.Options.Server.Handler = w.Router
-	log.Println(Gray(1-1, Bold("Worst HTTP running on " + w.Options.Server.Addr)).BgGray(24-1))
+	fmt.Println(Gray(1-1, Bold("Worst HTTP running on " + w.Options.Server.Addr)).BgGray(24-1))
 	if err := w.Options.Server.ListenAndServe(); err == nil {
-		log.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24-1))
+		fmt.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24-1))
 	}
 }
+
+

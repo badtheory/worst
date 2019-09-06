@@ -3,16 +3,18 @@ module github.com/badtheory/worst
 go 1.12
 
 require (
+	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/badtheory/informer v0.0.0-20190906114229-f13576948a1f
 	github.com/creasty/defaults v1.3.0
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi v4.0.2+incompatible
-	github.com/go-chi/render v1.0.1 // indirect
 	github.com/jordan-wright/unindexed v0.0.0-20181209214434-78fa79113c0f
 	github.com/logrusorgru/aurora v0.0.0-20190803045625-94edacc10f9b
-	github.com/sirupsen/logrus v1.4.2
-	github.com/treastech/logger v0.0.0-20180705232552-e381e9ecf2e3
+	github.com/pkg/errors v0.8.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/unrolled/render v1.0.1
 	github.com/unrolled/secure v1.0.1
-	go.uber.org/atomic v1.4.0 // indirect
-	go.uber.org/multierr v1.1.0 // indirect
-	go.uber.org/zap v1.10.0
+	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
