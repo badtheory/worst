@@ -1,17 +1,17 @@
 package worst
 
 import (
+	"github.com/creasty/defaults"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
+	log "github.com/sirupsen/logrus"
 	"github.com/unrolled/render"
 	"github.com/unrolled/secure"
-	"log"
 	"net/http"
 	"reflect"
 	"time"
-	"github.com/creasty/defaults"
 )
 
 type Worst struct {
@@ -38,6 +38,8 @@ type Static struct {
 }
 
 func New(opt ...Options) *Worst {
+
+	log.SetFormatter(&log.JSONFormatter{})
 
 	var o Options
 	var s Static

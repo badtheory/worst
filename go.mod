@@ -8,6 +8,7 @@ require (
 	github.com/go-chi/render v1.0.1 // indirect
 	github.com/jordan-wright/unindexed v0.0.0-20181209214434-78fa79113c0f
 	github.com/logrusorgru/aurora v0.0.0-20190803045625-94edacc10f9b
+	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/unrolled/render v1.0.1
 	github.com/unrolled/secure v1.0.1
 )
