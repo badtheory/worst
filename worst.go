@@ -6,13 +6,15 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/unrolled/render"
 	"github.com/unrolled/secure"
 	"net/http"
 	"reflect"
 	"time"
 )
+
+var log = logrus.New()
 
 type Worst struct {
 	Router 			*Router
@@ -38,8 +40,6 @@ type Static struct {
 }
 
 func New(opt ...Options) *Worst {
-
-	log.SetFormatter(&log.JSONFormatter{})
 
 	var o Options
 	var s Static
