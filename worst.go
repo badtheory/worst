@@ -17,27 +17,27 @@ import (
 )
 
 type Worst struct {
-	Router 			*Router
-	Security		*secure.Secure
-	Options			Options
+	Router   *Router
+	Security *secure.Secure
+	Options  Options
 }
 
 type Router struct {
-	Render		*render.Render
+	Render *render.Render
 	*chi.Mux
 }
 
 type Options struct {
-	Security		secure.Options
-	Static 			Static
-	Server          *http.Server
-	Render			*render.Render
-	Logger 	    informer.Configuration
+	Security secure.Options
+	Static   Static
+	Server   *http.Server
+	Render   *render.Render
+	Logger   informer.Configuration
 }
 
 type Static struct {
-	Url 		string `default:"/*"`
-	Path 		string `default:""`
+	Url  string `default:"/*"`
+	Path string `default:""`
 }
 
 func New(opt ...Options) *Worst {
@@ -78,7 +78,7 @@ func New(opt ...Options) *Worst {
 			panic(err)
 		}
 
-		if reflect.DeepEqual(Options{}.Security, opt[0].Security)  {
+		if reflect.DeepEqual(Options{}.Security, opt[0].Security) {
 			opt[0].Security = secure.Options{
 				STSSeconds:            31536000,
 				STSIncludeSubdomains:  true,
@@ -90,7 +90,7 @@ func New(opt ...Options) *Worst {
 			}
 		}
 
-		if (Options{}.Render == opt[0].Render)  {
+		if (Options{}.Render == opt[0].Render) {
 			opt[0].Render = render.New()
 		}
 
@@ -105,7 +105,7 @@ func New(opt ...Options) *Worst {
 			chi.NewRouter(),
 		},
 		Security: secureMiddleware,
-		Options: o,
+		Options:  o,
 	}
 
 	err := informer.NewLogger(o.Logger, informer.InstanceZapLogger)
@@ -119,7 +119,7 @@ func New(opt ...Options) *Worst {
 		Log(),
 		middleware.Recoverer,
 		middleware.Compress(3),
-		middleware.Timeout(60 * time.Second),
+		middleware.Timeout(60*time.Second),
 	)
 
 	w.Router.Handle(o.Static.Url, http.Handler(http.FileServer(unindexed.Dir(o.Static.Path))))
@@ -129,10 +129,8 @@ func New(opt ...Options) *Worst {
 
 func (w *Worst) Run() {
 	w.Options.Server.Handler = w.Router
-	fmt.Println(Gray(1-1, Bold("Worst HTTP running on " + w.Options.Server.Addr)).BgGray(24-1))
+	fmt.Println(Gray(1-1, Bold("Worst HTTP running on "+w.Options.Server.Addr)).BgGray(24 - 1))
 	if err := w.Options.Server.ListenAndServe(); err == nil {
-		fmt.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24-1))
+		fmt.Println(Red("Worst HTTP running on " + w.Options.Server.Addr).BgGray(24 - 1))
 	}
 }
-
-

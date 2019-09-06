@@ -16,12 +16,12 @@ func Log() func(next http.Handler) http.Handler {
 			defer func() {
 				ctx := informer.WithFields(
 					informer.Fields{
-						"proto": r.Proto,
-						"path": r.URL.Path,
+						"proto":   r.Proto,
+						"path":    r.URL.Path,
 						"latency": time.Since(t1),
-						"status": ww.Status(),
-						"size": ww.BytesWritten(),
-						"reqId": middleware.GetReqID(r.Context()),
+						"status":  ww.Status(),
+						"size":    ww.BytesWritten(),
+						"reqId":   middleware.GetReqID(r.Context()),
 					},
 				)
 				ctx.Infof("req_level_log")
