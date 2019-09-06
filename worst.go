@@ -6,15 +6,15 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/jordan-wright/unindexed"
 	. "github.com/logrusorgru/aurora"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
+	l "github.com/treastech/logger"
 	"github.com/unrolled/render"
 	"github.com/unrolled/secure"
+	"go.uber.org/zap"
 	"net/http"
 	"reflect"
 	"time"
 )
-
-var log = logrus.New()
 
 type Worst struct {
 	Router 			*Router
@@ -105,10 +105,14 @@ func New(opt ...Options) *Worst {
 		Options: o,
 	}
 
+
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+
 	w.Router.Use(
 		secureMiddleware.Handler,
 		middleware.RequestID,
-		middleware.Logger,
+		l.Logger(logger),
 		middleware.Recoverer,
 		middleware.Compress(3),
 		middleware.Timeout(60 * time.Second),
