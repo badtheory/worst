@@ -122,7 +122,10 @@ func New(opt ...Options) *Worst {
 		middleware.Timeout(60*time.Second),
 	)
 
-	w.Router.Handle(o.Static.Url, http.Handler(http.FileServer(unindexed.Dir(o.Static.Path))))
+	if (Static{} != o.Static) {
+		w.Router.Handle(o.Static.Url, http.Handler(http.FileServer(unindexed.Dir(o.Static.Path))))
+	}
+
 	return w
 
 }
