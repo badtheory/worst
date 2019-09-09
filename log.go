@@ -11,13 +11,14 @@ func Log() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
-			t1 := time.Now()
+			start := time.Now()
+			stop := time.Now()
 			defer func() {
 				ctx := informer.WithFields(
 					informer.Fields{
 						"proto":   r.Proto,
 						"path":    r.URL.Path,
-						"latency": time.Since(t1),
+						"latency": stop.Sub(start).String(),
 						"status":  ww.Status(),
 						"size":    ww.BytesWritten(),
 						"reqId":   middleware.GetReqID(r.Context()),
