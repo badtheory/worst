@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/unrolled/secure"
 	"net/http"
-	"reflect"
 )
 
 type Security struct {
@@ -141,25 +140,7 @@ func (s Security) defaults() {
 	}
 }
 
-func (s *Security) infuse(x interface{}) reflect.Value {
-	val := reflect.ValueOf(x).Elem()
-	otherFields := reflect.Indirect(reflect.ValueOf(s))
-
-	for i := 0; i < val.NumField(); i++ {
-		typeField := val.Type().Field(i)
-		otherValue := otherFields.FieldByName(typeField.Name)
-
-		if otherValue.IsValid() {
-			if val.CanSet() {
-				val.Field(i).Set(otherValue)
-			}
-		}
-	}
-	return val
-}
-
 func (s Security) fuse() (cors.Options, secure.Options) {
-
 	if err := defaults.Set(&s); err != nil {
 		panic(err)
 	}
