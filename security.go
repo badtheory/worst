@@ -1,10 +1,11 @@
 package worst
 
 import (
-	cors "github.com/go-chi/cors"
+	"github.com/creasty/defaults"
+	"github.com/go-chi/cors"
 	"github.com/unrolled/secure"
 	"net/http"
-	"github.com/creasty/defaults"
+	"reflect"
 )
 
 type Security struct {
@@ -66,9 +67,6 @@ type Security struct {
 	// When developing, the AllowedHosts, SSL, and STS options can cause some unwanted effects. Usually testing happens on http, not https, and on localhost, not your production domain... so set this to true for dev environment.
 	// If you would like your development environment to mimic production with complete Host blocking, SSL redirects, and STS headers, leave this as false. Default if false.
 	IsDevelopment bool
-
-	// nonceEnabled is used internally for dynamic nouces.
-	nonceEnabled bool
 
 	// If SSLRedirect is set to true, then only allow https requests. Default is false.
 	SSLRedirect bool
@@ -142,51 +140,31 @@ func (s Security) defaults() {
 	}
 }
 
+func (s *Security) infuse(x interface{}) reflect.Value {
+	val := reflect.ValueOf(x).Elem()
+	otherFields := reflect.Indirect(reflect.ValueOf(s))
+
+	for i := 0; i < val.NumField(); i++ {
+		typeField := val.Type().Field(i)
+		otherValue := otherFields.FieldByName(typeField.Name)
+
+		if otherValue.IsValid() {
+			if val.CanSet() {
+				val.Field(i).Set(otherValue)
+			}
+		}
+	}
+	return val
+}
+
 func (s Security) fuse() (cors.Options, secure.Options) {
 
 	if err := defaults.Set(&s); err != nil {
 		panic(err)
 	}
 
-	co := cors.Options{
-		AllowedOrigins: s.AllowedOrigins,
-		AllowOriginFunc: s.AllowOriginFunc,
-		AllowedMethods: s.AllowedMethods,
-		AllowedHeaders: s.AllowedHeaders,
-		ExposedHeaders: s.ExposedHeaders,
-		AllowCredentials: s.AllowCredentials,
-		MaxAge: s.MaxAge,
-		OptionsPassthrough: s.OptionsPassthrough,
-		Debug: s.Debug,
-	}
-
-	so := secure.Options{
-		BrowserXssFilter: s.BrowserXssFilter,
-		ContentTypeNosniff: s.ContentTypeNosniff,
-		ForceSTSHeader: s.ForceSTSHeader,
-		FrameDeny: s.FrameDeny,
-		IsDevelopment: s.IsDevelopment,
-		SSLRedirect : s.SSLRedirect,
-		SSLForceHost: s.SSLForceHost,
-		SSLTemporaryRedirect: s.SSLTemporaryRedirect,
-		STSIncludeSubdomains: s.STSIncludeSubdomains,
-		STSPreload: s.STSPreload,
-		ContentSecurityPolicy: s.ContentSecurityPolicy,
-		ContentSecurityPolicyReportOnly: s.ContentSecurityPolicyReportOnly,
-		CustomBrowserXssValue: s.CustomBrowserXssValue,
-		CustomFrameOptionsValue: s.CustomFrameOptionsValue,
-		PublicKey: s.PublicKey,
-		ReferrerPolicy: s.ReferrerPolicy,
-		FeaturePolicy: s.FeaturePolicy,
-		SSLHost: s.SSLHost,
-		AllowedHosts: s.AllowedHosts,
-		AllowedHostsAreRegex: s.AllowedHostsAreRegex,
-		HostsProxyHeaders: s.HostsProxyHeaders,
-		SSLHostFunc: s.SSLHostFunc,
-		SSLProxyHeaders: s.SSLProxyHeaders,
-		STSSeconds: s.STSSeconds,
-		ExpectCTHeader: s.ExpectCTHeader,
-	}
+	co := s.infuse(&cors.Options{}).Interface().(cors.Options)
+	so := s.infuse(&secure.Options{}).Interface().(secure.Options)
 
 	return co, so
 }
