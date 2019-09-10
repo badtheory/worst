@@ -46,11 +46,8 @@ func New() *Worst {
 	if err := defaults.Set(w); err != nil {
 		panic(err)
 	}
-
 	return w
-
 }
-
 
 func (w *Worst) Run() {
 	w.Server.Handler = w.Router

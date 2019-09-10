@@ -2,6 +2,7 @@ package worst
 
 import (
 	"github.com/badtheory/informer"
+	"github.com/badtheory/static"
 	"github.com/go-chi/chi/middleware"
 	"net/http"
 	"time"
@@ -16,6 +17,7 @@ type PlugInPlay interface {
 	Compress(next http.Handler) http.Handler
 	Heartbeat(next http.Handler) http.Handler
 	Informer(next http.Handler) http.Handler
+	Static(next http.Handler) http.Handler
 }
 
 func (m Middleware) Logger(next http.Handler) http.Handler {
@@ -66,4 +68,8 @@ func (m Middleware) Informer(opt ...informer.Configuration) func(next http.Handl
 		return http.HandlerFunc(fn)
 	}
 
+}
+
+func (m Middleware) Static(urlPrefix, location string, index bool) func(next http.Handler) http.Handler {
+	return static.Serve(urlPrefix, static.LocalFile(location, index))
 }
