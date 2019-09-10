@@ -1,6 +1,7 @@
 package worst
 
 import (
+	"github.com/badtheory/fuse"
 	"github.com/creasty/defaults"
 	"github.com/go-chi/cors"
 	"github.com/unrolled/secure"
@@ -163,8 +164,8 @@ func (s Security) fuse() (cors.Options, secure.Options) {
 		panic(err)
 	}
 
-	co := s.infuse(&cors.Options{}).Interface().(cors.Options)
-	so := s.infuse(&secure.Options{}).Interface().(secure.Options)
+	co := fuse.Fuse(&s, &cors.Options{}).(cors.Options)
+	so := fuse.Fuse(&s, &secure.Options{}).(secure.Options)
 
 	return co, so
 }

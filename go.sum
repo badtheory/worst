@@ -1,5 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/badtheory/fuse v0.0.0-20190910151953-b794b66df214 h1:tuS6DZhwOKzmFpYUb+zHvrXyJsHODCy3z93fTwo7DIE=
+github.com/badtheory/fuse v0.0.0-20190910151953-b794b66df214/go.mod h1:Jt4MQgVIUuOUKeYlr+IPvWrWwmIfJMKZgt20/RFQ6f8=
 github.com/badtheory/informer v0.0.0-20190906114229-f13576948a1f h1:paYc7Tlq8/c0CK+aOh0LKsKObYELHaKHzETL7XTtZOI=
 github.com/badtheory/informer v0.0.0-20190906114229-f13576948a1f/go.mod h1:wkyWMwNVFhN9pIrzLLK3IddoF605Y08i/NxIFkoCcuA=
 github.com/badtheory/static v0.0.0-20190910102759-fcaa9b0a89f8 h1:cQVR6XWnb51i2ZLLtovW7/lQCx+/YKngY7rEdEONyCg=
