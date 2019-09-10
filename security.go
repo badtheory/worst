@@ -1,15 +1,13 @@
 package worst
 
 import (
+	cors "github.com/go-chi/cors"
 	"github.com/unrolled/secure"
 	"net/http"
 	"github.com/creasty/defaults"
 )
 
 type Security struct {
-
-	// When true, no security defaults will be added, only do this if you want to implement your own
-	UseCustom bool `default:"false"`
 
 	// AllowedOrigins is a list of origins a cross-domain request can be executed from.
 	// If the special "*" value is present in the list, all origins will be allowed.
@@ -138,21 +136,57 @@ type Security struct {
 
 }
 
-func (s Security) custom() bool {
-	if s.UseCustom {
-		return true
-	}
-	return false
-}
-
 func (s Security) defaults() {
 	if err := defaults.Set(&s); err != nil {
 		panic(err)
 	}
 }
 
-func (s Security) fuse() {
+func (s Security) fuse() (cors.Options, secure.Options) {
+
 	if err := defaults.Set(&s); err != nil {
 		panic(err)
 	}
+
+	co := cors.Options{
+		AllowedOrigins: s.AllowedOrigins,
+		AllowOriginFunc: s.AllowOriginFunc,
+		AllowedMethods: s.AllowedMethods,
+		AllowedHeaders: s.AllowedHeaders,
+		ExposedHeaders: s.ExposedHeaders,
+		AllowCredentials: s.AllowCredentials,
+		MaxAge: s.MaxAge,
+		OptionsPassthrough: s.OptionsPassthrough,
+		Debug: s.Debug,
+	}
+
+	so := secure.Options{
+		BrowserXssFilter: s.BrowserXssFilter,
+		ContentTypeNosniff: s.ContentTypeNosniff,
+		ForceSTSHeader: s.ForceSTSHeader,
+		FrameDeny: s.FrameDeny,
+		IsDevelopment: s.IsDevelopment,
+		SSLRedirect : s.SSLRedirect,
+		SSLForceHost: s.SSLForceHost,
+		SSLTemporaryRedirect: s.SSLTemporaryRedirect,
+		STSIncludeSubdomains: s.STSIncludeSubdomains,
+		STSPreload: s.STSPreload,
+		ContentSecurityPolicy: s.ContentSecurityPolicy,
+		ContentSecurityPolicyReportOnly: s.ContentSecurityPolicyReportOnly,
+		CustomBrowserXssValue: s.CustomBrowserXssValue,
+		CustomFrameOptionsValue: s.CustomFrameOptionsValue,
+		PublicKey: s.PublicKey,
+		ReferrerPolicy: s.ReferrerPolicy,
+		FeaturePolicy: s.FeaturePolicy,
+		SSLHost: s.SSLHost,
+		AllowedHosts: s.AllowedHosts,
+		AllowedHostsAreRegex: s.AllowedHostsAreRegex,
+		HostsProxyHeaders: s.HostsProxyHeaders,
+		SSLHostFunc: s.SSLHostFunc,
+		SSLProxyHeaders: s.SSLProxyHeaders,
+		STSSeconds: s.STSSeconds,
+		ExpectCTHeader: s.ExpectCTHeader,
+	}
+
+	return co, so
 }

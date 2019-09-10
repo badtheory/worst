@@ -9,6 +9,7 @@ require (
 	github.com/creasty/defaults v1.3.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi v4.0.2+incompatible
+	github.com/go-chi/cors v1.0.0
 	github.com/logrusorgru/aurora v0.0.0-20190803045625-94edacc10f9b
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

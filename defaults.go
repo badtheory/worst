@@ -1,11 +1,27 @@
+// This is just a for convenience sake, syntax sugar, no magic
 package worst
 
-import "github.com/badtheory/informer"
+import (
+	"github.com/badtheory/informer"
+	"github.com/go-chi/cors"
+	"github.com/unrolled/secure"
+)
 
-func (w * Worst) SetDefaults() {
+func (w * Worst) SetMiddlewareDefaults() {
+	w.SetRequestId()
 	w.SetLogger()
-	w.SetCompress(3)
 	w.SetInformer()
+	w.SetCompress(3)
+}
+
+func (w * Worst) SetSecurityDefaults() {
+	co, so := w.Security.fuse()
+	w.Router.Use(w.Middleware.Secure(so))
+	w.Router.Use(w.Middleware.Cors(co))
+}
+
+func (w *Worst) SetRequestId() {
+	w.Router.Use(w.Middleware.RequestID)
 }
 
 func (w *Worst) SetLogger() {
@@ -23,3 +39,16 @@ func (w *Worst) SetInformer(opt ...informer.Configuration) {
 func (w *Worst) SetHeartbeat(endpoint string) {
 	w.Router.Use(w.Middleware.Heartbeat(endpoint))
 }
+
+func (w *Worst) SetStatic(urlPrefix, location string, index bool) {
+	w.Router.Use(w.Middleware.Static(urlPrefix, location, index))
+}
+
+func (w *Worst) Cors(options cors.Options) {
+	w.Router.Use(w.Middleware.Cors(options))
+}
+
+func (w *Worst) Secure(options secure.Options) {
+	w.Router.Use(w.Middleware.Secure(options))
+}
+

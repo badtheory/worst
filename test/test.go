@@ -8,7 +8,11 @@ import (
 func main() {
 	w := worst.New()
 
-	w.SetDefaults()
+
+	w.Security.AllowedOrigins = []string{"https://badreputation.pt"}
+
+	w.SetMiddlewareDefaults()
+	w.SetSecurityDefaults()
 
 	w.Router.Get("/test", func(w http.ResponseWriter, r *http.Request) {
 

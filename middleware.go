@@ -4,6 +4,8 @@ import (
 	"github.com/badtheory/informer"
 	"github.com/badtheory/static"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
+	"github.com/unrolled/secure"
 	"net/http"
 	"time"
 )
@@ -12,12 +14,19 @@ type Middleware struct {
 	http.Handler
 }
 
-type PlugInPlay interface {
+type PlugAndPlay interface {
+	RequestID(next http.Handler) http.Handler
 	Logger(next http.Handler) http.Handler
 	Compress(next http.Handler) http.Handler
 	Heartbeat(next http.Handler) http.Handler
 	Informer(next http.Handler) http.Handler
 	Static(next http.Handler) http.Handler
+	Cors(next http.Handler) http.Handler
+	Secure(next http.Handler) http.Handler
+}
+
+func (m Middleware) RequestID(next http.Handler) http.Handler {
+	return middleware.RequestID(next)
 }
 
 func (m Middleware) Logger(next http.Handler) http.Handler {
@@ -72,4 +81,14 @@ func (m Middleware) Informer(opt ...informer.Configuration) func(next http.Handl
 
 func (m Middleware) Static(urlPrefix, location string, index bool) func(next http.Handler) http.Handler {
 	return static.Serve(urlPrefix, static.LocalFile(location, index))
+}
+
+func (m Middleware) Cors(options cors.Options) func(next http.Handler) http.Handler {
+	c := cors.New(options)
+	return c.Handler
+}
+
+func (m Middleware) Secure(options secure.Options) func(next http.Handler) http.Handler {
+	s := secure.New(options)
+	return s.Handler
 }
