@@ -11,6 +11,7 @@ func (w * Worst) SetMiddlewareDefaults() {
 	w.SetRequestId()
 	w.SetLogger()
 	w.SetInformer()
+	w.SetRecover()
 	w.SetCompress(3)
 }
 
@@ -21,11 +22,15 @@ func (w * Worst) SetSecurityDefaults() {
 }
 
 func (w *Worst) SetRequestId() {
-	w.Router.Use(w.Middleware.RequestID)
+	w.Router.Use(w.Middleware.RequestId)
 }
 
 func (w *Worst) SetLogger() {
 	w.Router.Use(w.Middleware.Logger)
+}
+
+func (w *Worst) SetRecover() {
+	w.Router.Use(w.Middleware.Recover)
 }
 
 func (w *Worst) SetCompress(level int, types ...string) {

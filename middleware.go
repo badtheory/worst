@@ -25,12 +25,16 @@ type PlugAndPlay interface {
 	Secure(next http.Handler) http.Handler
 }
 
-func (m Middleware) RequestID(next http.Handler) http.Handler {
+func (m Middleware) RequestId(next http.Handler) http.Handler {
 	return middleware.RequestID(next)
 }
 
 func (m Middleware) Logger(next http.Handler) http.Handler {
 	return middleware.Logger(next)
+}
+
+func (m Middleware) Recover(next http.Handler) http.Handler {
+	return middleware.Recoverer(next)
 }
 
 func (m Middleware) Compress(level int, types ...string) func(next http.Handler) http.Handler {
