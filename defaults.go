@@ -49,11 +49,11 @@ func (w *Worst) SetStatic(urlPrefix, location string, index bool) {
 	w.Router.Use(w.Middleware.Static(urlPrefix, location, index))
 }
 
-func (w *Worst) Cors(options cors.Options) {
+func (w *Worst) SetCors(options cors.Options) {
 	w.Router.Use(w.Middleware.Cors(options))
 }
 
-func (w *Worst) Secure(options secure.Options) {
+func (w *Worst) SetSecure(options secure.Options) {
 	w.Router.Use(w.Middleware.Secure(options))
 }
 

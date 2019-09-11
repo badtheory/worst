@@ -144,9 +144,7 @@ func (s Security) fuse() (cors.Options, secure.Options) {
 	if err := defaults.Set(&s); err != nil {
 		panic(err)
 	}
-
 	co := fuse.Fuse(&s, &cors.Options{}).(cors.Options)
 	so := fuse.Fuse(&s, &secure.Options{}).(secure.Options)
-
 	return co, so
 }
