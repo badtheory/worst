@@ -2,7 +2,6 @@ package worst
 
 import (
 	"github.com/badtheory/fuse"
-	"github.com/creasty/defaults"
 	"github.com/go-chi/cors"
 	"github.com/unrolled/secure"
 	"net/http"
@@ -134,16 +133,7 @@ type Security struct {
 
 }
 
-func (s Security) defaults() {
-	if err := defaults.Set(&s); err != nil {
-		panic(err)
-	}
-}
-
 func (s Security) fuse() (cors.Options, secure.Options) {
-	if err := defaults.Set(&s); err != nil {
-		panic(err)
-	}
 	co := fuse.Fuse(&s, &cors.Options{}).(cors.Options)
 	so := fuse.Fuse(&s, &secure.Options{}).(secure.Options)
 	return co, so
