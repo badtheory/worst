@@ -83,7 +83,7 @@ type Security struct {
 	STSPreload bool `default:"true"`
 
 	// ContentSecurityPolicy allows the Content-Security-Policy header value to be set with a custom value. Default is "".
-	ContentSecurityPolicy string `default:"script-src $NONCE"`
+	ContentSecurityPolicy string `default:""`
 
 	// ContentSecurityPolicyReportOnly allows the Content-Security-Policy-Report-Only header value to be set with a custom value. Default is "".
 	ContentSecurityPolicyReportOnly string
