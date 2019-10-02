@@ -84,7 +84,7 @@ func (m Middleware) Informer(opt ...informer.Configuration) func(next http.Handl
 }
 
 func (m Middleware) Static(urlPrefix, location string, index bool) func(next http.Handler) http.Handler {
-	return static.Serve(urlPrefix, static.LocalFile(location, index))
+	return static.Serve(urlPrefix, location, index)
 }
 
 func (m Middleware) Cors(options cors.Options) func(next http.Handler) http.Handler {
